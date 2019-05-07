@@ -65,7 +65,7 @@ use_codes <-read_delim(
 
 
 parcel_use_code <- parcels %>% #merge use code and parcel datasetes
-  merge(use_codes, by = "UseCode") 
+ left_join(use_codes, by = "UseCode") 
 
 land_use <- parcel_use_code %>% 
   count(CodeDesc) %>% 

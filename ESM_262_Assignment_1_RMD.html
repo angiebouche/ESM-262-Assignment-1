@@ -235,7 +235,7 @@ wrote</code></pre>
 
 
 parcel_use_code &lt;- parcels %&gt;% #merge use code and parcel datasetes
-  merge(use_codes, by = &quot;UseCode&quot;) 
+ left_join(use_codes, by = &quot;UseCode&quot;) 
 
 land_use &lt;- parcel_use_code %&gt;% 
   count(CodeDesc) %&gt;% 
