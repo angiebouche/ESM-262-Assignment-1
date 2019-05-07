@@ -11,7 +11,6 @@
 
 <meta name="author" content="Angie Bouche" />
 
-<meta name="date" content="2019-04-19" />
 
 <title>ESM 263 Assignment 1 RMD</title>
 
@@ -124,14 +123,16 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">ESM 263 Assignment 1 RMD</h1>
 <h4 class="author"><em>Angie Bouche</em></h4>
-<h4 class="date"><em>April 19, 2019</em></h4>
+<h4 class="date"><em>May 7, 2019</em></h4>
 
 </div>
 
 
-<ol style="list-style-type: decimal">
-<li>Load Raw Data into tibble</li>
-</ol>
+<div id="part-1-import-and-tidy" class="section level1">
+<h1>Part 1: Import and Tidy</h1>
+</div>
+<div id="load-raw-data-into-parcels_raw-tibble" class="section level1">
+<h1>1. Load raw data into <code>parcels_raw</code> tibble</h1>
 <pre class="r"><code>parcels_raw &lt;-   read_delim(
     &quot;Santa_Barbara_County_parcels_2011.csv&quot;,
     delim = &quot;,&quot;,
@@ -164,11 +165,12 @@ parcels_raw</code></pre>
 ## #   SUnitType &lt;chr&gt;, SUnitNumb &lt;chr&gt;, SCity &lt;chr&gt;, SZip &lt;chr&gt;,
 ## #   SZipExt &lt;chr&gt;, M_Address1 &lt;chr&gt;, M_Address2 &lt;chr&gt;, WEB_LINK &lt;chr&gt;,
 ## #   SHAPE_Leng &lt;chr&gt;, Shape_area &lt;chr&gt;, Shape_len &lt;chr&gt;</code></pre>
-<div id="create-parcels-tibble-with-only-certian-columns.-change-na-values.-coonvert-columns-to-appropriate-type" class="section level1">
-<h1>2/3. Create parcels tibble with only certian columns. Change na values. Coonvert columns to appropriate type</h1>
+</div>
+<div id="create-parcels-tibble-with-only-certain-columns.-change-na-values.-convert-columns-to-appropriate-type" class="section level1">
+<h1>2/3. Create <code>parcels</code> tibble with only certain columns. Change na values. Convert columns to appropriate type</h1>
 <pre class="r"><code>parcels&lt;- parcels_raw %&gt;% 
   select(UseCode, APN, Situs1, Situs2, Acreage, NonTaxCode, AgPres, LandValue, Net_Impr, Net_AV, M_Address1, M_Address2) %&gt;% #select appropriate columns for parcels tibble
-  mutate(Net_AV, ifelse(Net_AV&lt;0, NA, Net_AV))#remove any negative assessment values
+  mutate(Net_AV, ifelse(Net_AV&lt;0, NA, Net_AV), na = &quot;&quot;, na = &quot;0&quot;)#remove any negative assessment values, change 'space' and '0' placeholders to NA
   
 
 parcels$Acreage=parse_double(parcels$Acreage) #convert numerical data columns from characters
@@ -176,8 +178,9 @@ parcels$LandValue= parse_double(parcels$LandValue)
 parcels$Net_Impr = parse_double(parcels$Net_Impr)
 parcels$Net_AV = parse_double(parcels$Net_AV)
 
+
 parcels</code></pre>
-<pre><code>## # A tibble: 128,566 x 13
+<pre><code>## # A tibble: 128,566 x 14
 ##    UseCode APN   Situs1 Situs2 Acreage NonTaxCode AgPres LandValue Net_Impr
 ##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      &lt;dbl&gt;    &lt;dbl&gt;
 ##  1 5443    083-~ &lt;NA&gt;   &lt;NA&gt;     361.  &lt;NA&gt;       72AP1~   3838662   768071
@@ -190,19 +193,19 @@ parcels</code></pre>
 ##  8 5443    083-~ &lt;NA&gt;   &lt;NA&gt;     275.  &lt;NA&gt;       70AP1~    442216        0
 ##  9 8100    083-~ &lt;NA&gt;   &lt;NA&gt;      16.6 PU         &lt;NA&gt;           0        0
 ## 10 5443    083-~ &lt;NA&gt;   &lt;NA&gt;     321.  &lt;NA&gt;       70AP1~    117024        0
-## # ... with 128,556 more rows, and 4 more variables: Net_AV &lt;dbl&gt;,
+## # ... with 128,556 more rows, and 5 more variables: Net_AV &lt;dbl&gt;,
 ## #   M_Address1 &lt;chr&gt;, M_Address2 &lt;chr&gt;, `ifelse(Net_AV &lt; 0, NA,
-## #   Net_AV)` &lt;chr&gt;</code></pre>
+## #   Net_AV)` &lt;chr&gt;, na &lt;chr&gt;</code></pre>
 </div>
 <div id="format-data-back-into-csv-from-the-tibble-using-as-a-deliminator" class="section level1">
-<h1>4. Format data back into csv from the tibble using | as a deliminator</h1>
+<h1>4. Format data back into csv from the tibble using “|” as a deliminator</h1>
 <pre class="r"><code>wrote &lt;- write_delim(parcels,
   &quot;final_parcels.csv&quot;,
   delim = &quot;|&quot;,
   na = &quot;&quot;) #create finalized csv using | deliminator
 
 wrote</code></pre>
-<pre><code>## # A tibble: 128,566 x 13
+<pre><code>## # A tibble: 128,566 x 14
 ##    UseCode APN   Situs1 Situs2 Acreage NonTaxCode AgPres LandValue Net_Impr
 ##    &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      &lt;dbl&gt;    &lt;dbl&gt;
 ##  1 5443    083-~ &lt;NA&gt;   &lt;NA&gt;     361.  &lt;NA&gt;       72AP1~   3838662   768071
@@ -215,12 +218,15 @@ wrote</code></pre>
 ##  8 5443    083-~ &lt;NA&gt;   &lt;NA&gt;     275.  &lt;NA&gt;       70AP1~    442216        0
 ##  9 8100    083-~ &lt;NA&gt;   &lt;NA&gt;      16.6 PU         &lt;NA&gt;           0        0
 ## 10 5443    083-~ &lt;NA&gt;   &lt;NA&gt;     321.  &lt;NA&gt;       70AP1~    117024        0
-## # ... with 128,556 more rows, and 4 more variables: Net_AV &lt;dbl&gt;,
+## # ... with 128,556 more rows, and 5 more variables: Net_AV &lt;dbl&gt;,
 ## #   M_Address1 &lt;chr&gt;, M_Address2 &lt;chr&gt;, `ifelse(Net_AV &lt; 0, NA,
-## #   Net_AV)` &lt;chr&gt;</code></pre>
-<ol style="list-style-type: decimal">
-<li>10 most frequently occurring land uses (descending)</li>
-</ol>
+## #   Net_AV)` &lt;chr&gt;, na &lt;chr&gt;</code></pre>
+</div>
+<div id="part-2-analyze" class="section level1">
+<h1>Part 2: Analyze</h1>
+</div>
+<div id="most-frequently-occurring-land-uses-descending-order" class="section level1">
+<h1>1. 10 most frequently occurring land uses (descending order)</h1>
 <pre class="r"><code>use_codes &lt;-read_delim(
     &quot;UseCodes.csv&quot;,
     delim = &quot;|&quot;,
@@ -250,9 +256,9 @@ land_use</code></pre>
 ##  8 Rec. Area - 5-6 class, 1000-1300 sq.ft.  1423
 ##  9 Planned Unit Development                 1124
 ## 10 Retail Stores, Single Story              1024</code></pre>
-<ol start="2" style="list-style-type: decimal">
-<li>How many acres are in agricultural preserves?</li>
-</ol>
+</div>
+<div id="how-many-acres-are-in-agricultural-preserves" class="section level1">
+<h1>2. How many acres are in agricultural preserves?</h1>
 <pre class="r"><code>ag&lt;- parcels %&gt;% 
   filter(AgPres!= &quot;NA&quot;) %&gt;% 
   summarize(sum(Acreage)) #select agricultural preserve rows, and sum
@@ -262,22 +268,21 @@ ag</code></pre>
 ##   `sum(Acreage)`
 ##            &lt;dbl&gt;
 ## 1        549563.</code></pre>
-<ol start="3" style="list-style-type: decimal">
-<li>What is the mean net assessed value per acre of the entire county?</li>
-</ol>
+</div>
+<div id="what-is-the-mean-net-assessed-value-per-acre-of-the-entire-county" class="section level1">
+<h1>3. What is the mean net assessed value per acre of the entire county?</h1>
 <pre class="r"><code>mean_nav&lt;-parcels %&gt;% 
   select(Acreage, Net_AV) %&gt;% 
-  summarize (mean = (sum(Net_AV, na.rm = TRUE)/sum(Acreage))) #select acreage and net assessed value columns, and average assessed value per acre
+  summarize (mean = (sum(Net_AV)/sum(Acreage))) #select acreage and net assessed value columns, and average assessed value per acre
   
-
 mean_nav</code></pre>
 <pre><code>## # A tibble: 1 x 1
 ##     mean
 ##    &lt;dbl&gt;
 ## 1 34203.</code></pre>
-<ol start="4" style="list-style-type: decimal">
-<li>What is the total net assessed value of all non-taxable parcels?</li>
-</ol>
+</div>
+<div id="what-is-the-total-net-assessed-value-of-all-non-taxable-parcels" class="section level1">
+<h1>4. What is the total net assessed value of all non-taxable parcels?</h1>
 <pre class="r"><code>nav_nontax &lt;- parcels %&gt;% 
   select(NonTaxCode, Net_AV) %&gt;%
   filter(NonTaxCode != &quot;NA&quot;, Net_AV != &quot;NA&quot;) %&gt;% 
@@ -288,7 +293,9 @@ nav_nontax</code></pre>
 ##   `sum(Net_AV)`
 ##           &lt;dbl&gt;
 ## 1    1093026091</code></pre>
-<p>5.What are the 10 largest property holders, by acreage?</p>
+</div>
+<div id="what-are-the-10-largest-property-holders-by-acreage" class="section level1">
+<h1>5.What are the 10 largest property holders, by acreage?</h1>
 <pre class="r"><code>topten_acres &lt;- parcels %&gt;% 
   filter(M_Address1 != &quot;NA&quot;, M_Address2 != &quot;NA&quot;) %&gt;% #filter to include only properties with an owner
   group_by(M_Address1, M_Address2) %&gt;% #group by owner
@@ -311,9 +318,9 @@ topten_acres</code></pre>
 ##  8 PO BOX 9               SAN JUAN CAPISTRANO CA 92693  10170.
 ##  9 2300 EAST VALLEY RD    SANTA BARBARA CA 93108         9801.
 ## 10 PO BOX 338             SANTA YNEZ CA 93460            9189.</code></pre>
-<ol start="6" style="list-style-type: decimal">
-<li>What are the 10 largest property holders, by net assessed value?</li>
-</ol>
+</div>
+<div id="what-are-the-10-largest-property-holders-by-net-assessed-value" class="section level1">
+<h1>6. What are the 10 largest property holders, by net assessed value?</h1>
 <pre class="r"><code>topten_acres &lt;- parcels %&gt;% 
   select(Net_AV, M_Address1, M_Address2) %&gt;% 
   filter(M_Address1 != &quot;NA&quot;, M_Address2 != &quot;NA&quot;) %&gt;% #filter to include only properties with an owner

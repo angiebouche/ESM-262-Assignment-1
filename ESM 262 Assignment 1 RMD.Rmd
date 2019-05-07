@@ -1,7 +1,7 @@
 ---
 title: "ESM 263 Assignment 1 RMD"
 author: "Angie Bouche"
-date: "April 19, 2019"
+date: "May 7, 2019"
 output:
   html_document: default
   pdf_document: default
@@ -12,8 +12,9 @@ library(tidyverse) #load tidyverse
 
 ```
 
+#Part 1: Import and Tidy
 
-1. Load Raw Data into tibble
+#1. Load raw data into `parcels_raw` tibble
 ```{r}
 parcels_raw <-   read_delim(
     "Santa_Barbara_County_parcels_2011.csv",
@@ -24,13 +25,12 @@ parcels_raw <-   read_delim(
 parcels_raw
 ```
 
-#2/3. Create parcels tibble with only certian columns. Change na values. Coonvert columns to appropriate type
+#2/3. Create `parcels` tibble with only certain columns. Change na values. Convert columns to appropriate type
 ```{r}
-
 
 parcels<- parcels_raw %>% 
   select(UseCode, APN, Situs1, Situs2, Acreage, NonTaxCode, AgPres, LandValue, Net_Impr, Net_AV, M_Address1, M_Address2) %>% #select appropriate columns for parcels tibble
-  mutate(Net_AV, ifelse(Net_AV<0, NA, Net_AV))#remove any negative assessment values
+  mutate(Net_AV, ifelse(Net_AV<0, NA, Net_AV), na = "", na = "0")#remove any negative assessment values, change 'space' and '0' placeholders to NA
   
 
 parcels$Acreage=parse_double(parcels$Acreage) #convert numerical data columns from characters
@@ -38,10 +38,11 @@ parcels$LandValue= parse_double(parcels$LandValue)
 parcels$Net_Impr = parse_double(parcels$Net_Impr)
 parcels$Net_AV = parse_double(parcels$Net_AV)
 
+
 parcels
 
 ```
-#4. Format data back into csv from the tibble using | as a deliminator
+#4. Format data back into csv from the tibble using "|" as a deliminator
 ```{r}
 wrote <- write_delim(parcels,
   "final_parcels.csv",
@@ -52,7 +53,9 @@ wrote
 
 ```
 
-1. 10 most frequently occurring land uses (descending)
+#Part 2: Analyze
+
+#1. 10 most frequently occurring land uses (descending order)
 ```{r}
 
 use_codes <-read_delim(
@@ -74,7 +77,7 @@ land_use
 
 ```
 
-2. How many acres are in agricultural preserves?
+#2. How many acres are in agricultural preserves?
 ```{r}
 
 ag<- parcels %>% 
@@ -85,18 +88,17 @@ ag
 
 ```
 
-3. What is the mean net assessed value per acre of the entire county?
+#3. What is the mean net assessed value per acre of the entire county?
 ```{r}
 mean_nav<-parcels %>% 
   select(Acreage, Net_AV) %>% 
   summarize (mean = (sum(Net_AV)/sum(Acreage))) #select acreage and net assessed value columns, and average assessed value per acre
   
-
 mean_nav
   
 ```
 
-4. What is the total net assessed value of all non-taxable parcels?
+#4. What is the total net assessed value of all non-taxable parcels?
 ```{r}
 nav_nontax <- parcels %>% 
   select(NonTaxCode, Net_AV) %>%
@@ -107,7 +109,7 @@ nav_nontax
 
 ```
 
-5.What are the 10 largest property holders, by acreage?
+#5.What are the 10 largest property holders, by acreage?
 ```{r}
 topten_acres <- parcels %>% 
   filter(M_Address1 != "NA", M_Address2 != "NA") %>% #filter to include only properties with an owner
@@ -120,7 +122,7 @@ topten_acres
 
 ```
 
-6. What are the 10 largest property holders, by net assessed value?
+#6. What are the 10 largest property holders, by net assessed value?
 ```{r}
 
 topten_acres <- parcels %>% 
