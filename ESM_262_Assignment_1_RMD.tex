@@ -1,0 +1,444 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={ESM 263 Assignment 1 RMD},
+            pdfauthor={Angie Bouche},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{ESM 263 Assignment 1 RMD}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{Angie Bouche}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+      \predate{\centering\large\emph}
+  \postdate{\par}
+    \date{April 19, 2019}
+
+
+\begin{document}
+\maketitle
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Load Raw Data into tibble
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{parcels_raw <-}\StringTok{   }\KeywordTok{read_delim}\NormalTok{(}
+    \StringTok{"Santa_Barbara_County_parcels_2011.csv"}\NormalTok{,}
+    \DataTypeTok{delim =} \StringTok{","}\NormalTok{,}
+    \DataTypeTok{col_types =} \KeywordTok{cols}\NormalTok{(}\DataTypeTok{.default =} \KeywordTok{col_character}\NormalTok{()) }\CommentTok{#read in parcels data csv and convert to tibble}
+\NormalTok{  )}
+
+\NormalTok{parcels_raw}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 128,566 x 56
+##    OBJECTID APN   LAYER Situs1 Situs2 Acreage LandUse UseCode TRA  
+##    <chr>    <chr> <chr> <chr>  <chr>  <chr>   <chr>   <chr>   <chr>
+##  1 1        083-~ Grou~ <NA>   <NA>   360.91~ PASTUR~ 5443    0720~
+##  2 2        083-~ Grou~ <NA>   <NA>   294.90~ PASTUR~ 5443    0720~
+##  3 3        083-~ Grou~ <NA>   <NA>   153.30~ PASTUR~ 5413    0720~
+##  4 4        083-~ Grou~ <NA>   <NA>   53.620~ PASTUR~ 5443    0720~
+##  5 5        083-~ Grou~ <NA>   <NA>   60.910~ PASTUR~ 5443    0720~
+##  6 6        083-~ Grou~ <NA>   <NA>   73.000~ PASTUR~ 5413    0720~
+##  7 7        083-~ Grou~ <NA>   <NA>   100.00~ PASTUR~ 5443    0720~
+##  8 8        083-~ Grou~ <NA>   <NA>   275.33~ PASTUR~ 5443    0720~
+##  9 9        083-~ Grou~ <NA>   <NA>   16.620~ UTILIT~ 8100    0940~
+## 10 10       083-~ Grou~ <NA>   <NA>   320.83~ PASTUR~ 5443    0720~
+## # ... with 128,556 more rows, and 47 more variables: NonTaxCode <chr>,
+## #   SBENo <chr>, AgPres <chr>, LandValue <chr>, StrImpr <chr>,
+## #   TradeFix <chr>, LivImpr <chr>, PerPropDec <chr>, PersPropUn <chr>,
+## #   MobileHome <chr>, Exemptions <chr>, ExempCode <chr>, HomeOwEx <chr>,
+## #   NetSecVal <chr>, Net_Impr <chr>, Net_Pers <chr>, Net_UNX <chr>,
+## #   Net_AV <chr>, MNumber <chr>, MFrac <chr>, MDir <chr>, MStreet <chr>,
+## #   MStrSuffix <chr>, MUnitType <chr>, MUnitNumb <chr>, POBox <chr>,
+## #   MCity <chr>, MZip <chr>, MZipExt <chr>, MState <chr>, Country <chr>,
+## #   SNum <chr>, SFra <chr>, SDir <chr>, SStreet <chr>, SStreetSuf <chr>,
+## #   SUnitType <chr>, SUnitNumb <chr>, SCity <chr>, SZip <chr>,
+## #   SZipExt <chr>, M_Address1 <chr>, M_Address2 <chr>, WEB_LINK <chr>,
+## #   SHAPE_Leng <chr>, Shape_area <chr>, Shape_len <chr>
+\end{verbatim}
+
+\section{2/3. Create parcels tibble with only certian columns. Change na
+values. Coonvert columns to appropriate
+type}\label{create-parcels-tibble-with-only-certian-columns.-change-na-values.-coonvert-columns-to-appropriate-type}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{parcels<-}\StringTok{ }\NormalTok{parcels_raw }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select}\NormalTok{(UseCode, APN, Situs1, Situs2, Acreage, NonTaxCode, AgPres, LandValue, Net_Impr, Net_AV, M_Address1, M_Address2) }\OperatorTok{%>%}\StringTok{ }\CommentTok{#select appropriate columns for parcels tibble}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(Net_AV, }\KeywordTok{ifelse}\NormalTok{(Net_AV}\OperatorTok{<}\DecValTok{0}\NormalTok{, }\OtherTok{NA}\NormalTok{, Net_AV))}\CommentTok{#remove any negative assessment values}
+  
+
+\NormalTok{parcels}\OperatorTok{$}\NormalTok{Acreage=}\KeywordTok{parse_double}\NormalTok{(parcels}\OperatorTok{$}\NormalTok{Acreage) }\CommentTok{#convert numerical data columns from characters}
+\NormalTok{parcels}\OperatorTok{$}\NormalTok{LandValue=}\StringTok{ }\KeywordTok{parse_double}\NormalTok{(parcels}\OperatorTok{$}\NormalTok{LandValue)}
+\NormalTok{parcels}\OperatorTok{$}\NormalTok{Net_Impr =}\StringTok{ }\KeywordTok{parse_double}\NormalTok{(parcels}\OperatorTok{$}\NormalTok{Net_Impr)}
+\NormalTok{parcels}\OperatorTok{$}\NormalTok{Net_AV =}\StringTok{ }\KeywordTok{parse_double}\NormalTok{(parcels}\OperatorTok{$}\NormalTok{Net_AV)}
+
+\NormalTok{parcels}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 128,566 x 13
+##    UseCode APN   Situs1 Situs2 Acreage NonTaxCode AgPres LandValue Net_Impr
+##    <chr>   <chr> <chr>  <chr>    <dbl> <chr>      <chr>      <dbl>    <dbl>
+##  1 5443    083-~ <NA>   <NA>     361.  <NA>       72AP1~   3838662   768071
+##  2 5443    083-~ <NA>   <NA>     295.  <NA>       72AP1~   1186685        0
+##  3 5413    083-~ <NA>   <NA>     153.  <NA>       <NA>      518967        0
+##  4 5443    083-~ <NA>   <NA>      53.6 <NA>       72AP1~    784694        0
+##  5 5443    083-~ <NA>   <NA>      60.9 <NA>       70AP1~    784974        0
+##  6 5413    083-~ <NA>   <NA>      73   <NA>       <NA>      233535        0
+##  7 5443    083-~ <NA>   <NA>     100   <NA>       70AP1~    438298        0
+##  8 5443    083-~ <NA>   <NA>     275.  <NA>       70AP1~    442216        0
+##  9 8100    083-~ <NA>   <NA>      16.6 PU         <NA>           0        0
+## 10 5443    083-~ <NA>   <NA>     321.  <NA>       70AP1~    117024        0
+## # ... with 128,556 more rows, and 4 more variables: Net_AV <dbl>,
+## #   M_Address1 <chr>, M_Address2 <chr>, `ifelse(Net_AV < 0, NA,
+## #   Net_AV)` <chr>
+\end{verbatim}
+
+\section{4. Format data back into csv from the tibble using \textbar{}
+as a
+deliminator}\label{format-data-back-into-csv-from-the-tibble-using-as-a-deliminator}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{wrote <-}\StringTok{ }\KeywordTok{write_delim}\NormalTok{(parcels,}
+  \StringTok{"final_parcels.csv"}\NormalTok{,}
+  \DataTypeTok{delim =} \StringTok{"|"}\NormalTok{,}
+  \DataTypeTok{na =} \StringTok{""}\NormalTok{) }\CommentTok{#create finalized csv using | deliminator}
+
+\NormalTok{wrote}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 128,566 x 13
+##    UseCode APN   Situs1 Situs2 Acreage NonTaxCode AgPres LandValue Net_Impr
+##    <chr>   <chr> <chr>  <chr>    <dbl> <chr>      <chr>      <dbl>    <dbl>
+##  1 5443    083-~ <NA>   <NA>     361.  <NA>       72AP1~   3838662   768071
+##  2 5443    083-~ <NA>   <NA>     295.  <NA>       72AP1~   1186685        0
+##  3 5413    083-~ <NA>   <NA>     153.  <NA>       <NA>      518967        0
+##  4 5443    083-~ <NA>   <NA>      53.6 <NA>       72AP1~    784694        0
+##  5 5443    083-~ <NA>   <NA>      60.9 <NA>       70AP1~    784974        0
+##  6 5413    083-~ <NA>   <NA>      73   <NA>       <NA>      233535        0
+##  7 5443    083-~ <NA>   <NA>     100   <NA>       70AP1~    438298        0
+##  8 5443    083-~ <NA>   <NA>     275.  <NA>       70AP1~    442216        0
+##  9 8100    083-~ <NA>   <NA>      16.6 PU         <NA>           0        0
+## 10 5443    083-~ <NA>   <NA>     321.  <NA>       70AP1~    117024        0
+## # ... with 128,556 more rows, and 4 more variables: Net_AV <dbl>,
+## #   M_Address1 <chr>, M_Address2 <chr>, `ifelse(Net_AV < 0, NA,
+## #   Net_AV)` <chr>
+\end{verbatim}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  10 most frequently occurring land uses (descending)
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{use_codes <-}\KeywordTok{read_delim}\NormalTok{(}
+    \StringTok{"UseCodes.csv"}\NormalTok{,}
+    \DataTypeTok{delim =} \StringTok{"|"}\NormalTok{,}
+    \DataTypeTok{col_types =} \KeywordTok{cols}\NormalTok{(}\DataTypeTok{.default =} \KeywordTok{col_character}\NormalTok{()) }
+\NormalTok{  ) }\CommentTok{#read in use codes data as tibble}
+
+
+\NormalTok{parcel_use_code <-}\StringTok{ }\NormalTok{parcels }\OperatorTok{%>%}\StringTok{ }\CommentTok{#merge use code and parcel datasetes}
+\StringTok{  }\KeywordTok{merge}\NormalTok{(use_codes, }\DataTypeTok{by =} \StringTok{"UseCode"}\NormalTok{) }
+
+\NormalTok{land_use <-}\StringTok{ }\NormalTok{parcel_use_code }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{count}\NormalTok{(CodeDesc) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{arrange}\NormalTok{(}\OperatorTok{-}\NormalTok{n) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{ }\KeywordTok{head}\NormalTok{(}\DecValTok{10}\NormalTok{) }\CommentTok{#count types of land use codes, arrange in descending order, select top 10 rows}
+
+\NormalTok{land_use}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 10 x 2
+##    CodeDesc                                    n
+##    <chr>                                   <int>
+##  1 Single Family Residence                 73915
+##  2 Residential Rentals                      4985
+##  3 Sited inside M/H Park (Rented)           4540
+##  4 Vacant Land                              4382
+##  5 Condo                                    3791
+##  6 Double Wide New Const. (after 7/1/80)    1718
+##  7 Apartments (5 or more units)             1486
+##  8 Rec. Area - 5-6 class, 1000-1300 sq.ft.  1423
+##  9 Planned Unit Development                 1124
+## 10 Retail Stores, Single Story              1024
+\end{verbatim}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  How many acres are in agricultural preserves?
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ag<-}\StringTok{ }\NormalTok{parcels }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{filter}\NormalTok{(AgPres}\OperatorTok{!=}\StringTok{ "NA"}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarize}\NormalTok{(}\KeywordTok{sum}\NormalTok{(Acreage)) }\CommentTok{#select agricultural preserve rows, and sum}
+
+\NormalTok{ag}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 1 x 1
+##   `sum(Acreage)`
+##            <dbl>
+## 1        549563.
+\end{verbatim}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  What is the mean net assessed value per acre of the entire county?
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{mean_nav<-parcels }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select}\NormalTok{(Acreage, Net_AV) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarize}\NormalTok{ (}\DataTypeTok{mean =}\NormalTok{ (}\KeywordTok{sum}\NormalTok{(Net_AV, }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}\OperatorTok{/}\KeywordTok{sum}\NormalTok{(Acreage))) }\CommentTok{#select acreage and net assessed value columns, and average assessed value per acre}
+  
+
+\NormalTok{mean_nav}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 1 x 1
+##     mean
+##    <dbl>
+## 1 34203.
+\end{verbatim}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  What is the total net assessed value of all non-taxable parcels?
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{nav_nontax <-}\StringTok{ }\NormalTok{parcels }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select}\NormalTok{(NonTaxCode, Net_AV) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(NonTaxCode }\OperatorTok{!=}\StringTok{ "NA"}\NormalTok{, Net_AV }\OperatorTok{!=}\StringTok{ "NA"}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarize}\NormalTok{(}\KeywordTok{sum}\NormalTok{(Net_AV))}
+
+\NormalTok{nav_nontax}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 1 x 1
+##   `sum(Net_AV)`
+##           <dbl>
+## 1    1093026091
+\end{verbatim}
+
+5.What are the 10 largest property holders, by acreage?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{topten_acres <-}\StringTok{ }\NormalTok{parcels }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{filter}\NormalTok{(M_Address1 }\OperatorTok{!=}\StringTok{ "NA"}\NormalTok{, M_Address2 }\OperatorTok{!=}\StringTok{ "NA"}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\CommentTok{#filter to include only properties with an owner}
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(M_Address1, M_Address2) }\OperatorTok{%>%}\StringTok{ }\CommentTok{#group by owner}
+\StringTok{  }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{sum_col =} \KeywordTok{sum}\NormalTok{(Acreage)) }\OperatorTok{%>%}\StringTok{  }
+\StringTok{  }\KeywordTok{arrange}\NormalTok{(}\OperatorTok{-}\NormalTok{sum_col) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{head}\NormalTok{(}\DecValTok{10}\NormalTok{) }\CommentTok{#add up acreage for each owner, arrange in descending order, select top 10 owners and their land mass}
+  
+\NormalTok{topten_acres}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 10 x 3
+## # Groups:   M_Address1 [10]
+##    M_Address1             M_Address2                   sum_col
+##    <chr>                  <chr>                          <dbl>
+##  1 785 MARKET ST          SAN FRANCISCO CA 94103        37860 
+##  2 166 PARADISE RD        SANTA BARBARA CA 93105        30110.
+##  3 PO BOX 573             LAKE ARROWHEAD CA 92352       24263.
+##  4 870 MARKET ST 1100     SAN FRANCISCO CA 94102        23834.
+##  5 2491 BULL CANYON RD    SANTA MARIA CA 93454          18595.
+##  6 201 MISSION ST 4TH FLR SAN FRANCISCO CA 94105 1831   16640 
+##  7 PO BOX 340             SAN LUCAS CA 93954            15374.
+##  8 PO BOX 9               SAN JUAN CAPISTRANO CA 92693  10170.
+##  9 2300 EAST VALLEY RD    SANTA BARBARA CA 93108         9801.
+## 10 PO BOX 338             SANTA YNEZ CA 93460            9189.
+\end{verbatim}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{5}
+\tightlist
+\item
+  What are the 10 largest property holders, by net assessed value?
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{topten_acres <-}\StringTok{ }\NormalTok{parcels }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select}\NormalTok{(Net_AV, M_Address1, M_Address2) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{filter}\NormalTok{(M_Address1 }\OperatorTok{!=}\StringTok{ "NA"}\NormalTok{, M_Address2 }\OperatorTok{!=}\StringTok{ "NA"}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\CommentTok{#filter to include only properties with an owner}
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(M_Address1, M_Address2) }\OperatorTok{%>%}\StringTok{ }\CommentTok{#group by owner}
+\StringTok{  }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{sum_col2 =} \KeywordTok{sum}\NormalTok{(Net_AV)) }\OperatorTok{%>%}\StringTok{  }
+\StringTok{  }\KeywordTok{arrange}\NormalTok{(}\OperatorTok{-}\NormalTok{sum_col2) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{head}\NormalTok{(}\DecValTok{10}\NormalTok{) }\CommentTok{#sum up value of property for each owner, arrange by descending order, select top 10 owners}
+  
+\NormalTok{topten_acres}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 10 x 3
+## # Groups:   M_Address1 [10]
+##    M_Address1           M_Address2                   sum_col2
+##    <chr>                <chr>                           <dbl>
+##  1 737 GARDEN ST        SANTA BARBARA CA 93101      242575885
+##  2 735 ANACAPA ST       SANTA BARBARA CA 93101      190784490
+##  3 21 E VICTORIA ST 200 SANTA BARBARA CA 93101      179642731
+##  4 PO BOX 20130         SANTA BARBARA CA 93120 0130 177735038
+##  5 280 CHESTNUT         WESTMONT IL 60559           157323864
+##  6 PO BOX 660248        DALLAS TX 75266 0248        151925292
+##  7 1260 CHANNEL DR      SANTA BARBARA CA 93105      120001340
+##  8 645 FIFTH AVE 8      NEW YORK NY 10022           118000000
+##  9 500 STEVENS AVE 100  SOLANA BEACH CA 92075       107926369
+## 10 2235 FARADAY AVE O   CARLSBAD CA 92008           104533906
+\end{verbatim}
+
+
+\end{document}
