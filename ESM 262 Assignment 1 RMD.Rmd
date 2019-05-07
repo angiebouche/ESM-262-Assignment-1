@@ -7,12 +7,11 @@ output:
   pdf_document: default
 ---
 
+#Part 1: Import and Tidy
 ```{r setup, include=FALSE}
 library(tidyverse) #load tidyverse
 
 ```
-
-#Part 1: Import and Tidy
 
 #1. Load raw data into `parcels_raw` tibble
 ```{r}
