@@ -46,11 +46,12 @@ parcels
 
 #4. Format data into an SQL Database file
 ```{r}
-db <- dbConnect(RSQLite::SQLite(), dbname = "parcels.db")#connect Rmd SQL chunk to SQLite database
+parcelsdb <- dbConnect(RSQLite::SQLite(), dbname = "parcels.db")#connect Rmd SQL chunk to SQLite database
 
-copy_to("parcels.db", parcels)
+dbWriteTable(conn = parcelsdb, name = "parcels", value = parcels) # first argument is conenction handle, second is name for table in database, third is the dataframe itself
 
-parcels_db <- tbl(db, "parcels.db")
+dbListTables(parcelsdb)#check table
+dbDisconnect(parcelsdb)#close
 
 
 ```
@@ -60,11 +61,9 @@ parcels_db <- tbl(db, "parcels.db")
 #1. 10 most frequently occurring land uses (descending order)
 ```{sql connection=db}
 
-copy_to(db, use_codes)
 
-
-SELECT UseCode
-FROM   Parcels JOIN use_codes
+SELECT *
+FROM   parcels JOIN use_codes
 ON     UseCode = UseCode;
 
 SELECT UseCOde FROM Parcels ORDER BY quant DESC;
@@ -72,53 +71,26 @@ SELECT UseCOde FROM Parcels ORDER BY quant DESC;
 ```
 
 #2. How many acres are in agricultural preserves?
-```{r}
-
-ag<- parcels %>% 
-  filter(AgPres!= "NA") %>% 
-  summarize(sum(Acreage)) #select agricultural preserve rows, and sum
-
-ag
-
-
-```
 
 ```{sql connection=db}
 
-SELECT sum(*) FROM parcels WHERE AgPres = NOT 'NA' 
+SELECT sum(Acreage) FROM parcels WHERE AgPres >0
 
 
 ```
 
 #3. What is the mean net assessed value per acre of the entire county?
-```{r}
-mean_nav<-parcels %>% 
-  select(Acreage, Net_AV) %>% 
-  summarize (mean = (sum(Net_AV)/sum(Acreage))) #select acreage and net assessed value columns, and average assessed value per acre
-  
-mean_nav
-  
-```
 
 ```{sql connection=db}
-SELECT avg(sum(Acreage)/ sum(Net_AV)) FROM parcels 
+SELECT sum(Net_AV)/ sum(Acreage) FROM parcels
 
 ```
 
 
 #4. What is the total net assessed value of all non-taxable parcels?
-```{r}
-nav_nontax <- parcels %>% 
-  select(NonTaxCode, Net_AV) %>%
-  filter(NonTaxCode != "NA", Net_AV != "NA") %>% 
-  summarize(sum(Net_AV))
-
-nav_nontax
-
-```
 
 ```{sql connection=db}
-SELECT sum(Net_AV) FROM parcels WHERE NonTAxCode = NOT 'NA'
+SELECT sum(Net_AV) FROM parcels WHERE NonTaxCode >0
 ```
 
 
@@ -137,10 +109,10 @@ topten_acres
 
 ```{sql connection=db}
 
-SELECT sum(Acreage) FROM parcels 
-WHERE M_Address1 = NOT 'NA'
-WHERE M_Address2 = NOT 'NA'
-ORDER BY Acreage DESC
+SELECT sum(Acreage) FROM parcels
+WHERE M_Address1 AND M_Address2 != 'NA' 
+GROUP BY M_Address1
+ORDER BY  Acreage DESC
 ```
 
 
@@ -161,8 +133,8 @@ topten_acres
 
 ```{sql connection=db}
 
-SELECT sum(Net_AV) FROM parcels 
-WHERE M_Address1 = NOT 'NA'
-WHERE M_Address2 = NOT 'NA'
+SELECT sum(Net_AV) FROM parcels
+WHERE M_Address1 != NULL AND
+WHERE M_Address2 != NULL
 ORDER BY Net_AV DESC
 ```
