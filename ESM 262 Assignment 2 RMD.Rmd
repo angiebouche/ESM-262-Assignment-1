@@ -69,12 +69,12 @@ dbWriteTable(conn = parcelsdb, name = "usecodes", value = usecodes, overwrite = 
 #1. 10 most frequently occurring land uses (descending order)
 ```{sql connection=parcelsdb}
 
-
-SELECT UseCode, CodeDesc, count (CodeDesc)
-FROM   parcels LEFT JOIN usecodes
-ON     Parcels.UseCode = UseCodes.UseCode2;
+SELECT UseCode, CodeDesc, count(UseCode) AS "Number of Properties"
+FROM   parcels
+JOIN usecodes ON Parcels.UseCode = usecodes.UseCode2
 GROUP BY UseCode
-ORDER BY CodeDesc DESC
+ORDER By count(UseCode) DESC
+LIMIT 10;
 
 ```
 
@@ -82,15 +82,15 @@ ORDER BY CodeDesc DESC
 
 ```{sql connection=parcelsdb}
 
-SELECT sum(Acreage) FROM parcels WHERE AgPres >0
-
+SELECT sum(Acreage) AS "Total Acreage" FROM parcels WHERE AgPres >0; 
 
 ```
+Only count cells where AgPres is over 0 to get rid of non-agricultural properties.
 
 #3. What is the mean net assessed value per acre of the entire county?
 
 ```{sql connection=parcelsdb}
-SELECT sum(Net_AV)/ sum(Acreage) FROM parcels
+SELECT sum(Net_AV)/ sum(Acreage) AS "Average Assessed Value per Acre" FROM parcels;
 
 ```
 
@@ -98,31 +98,32 @@ SELECT sum(Net_AV)/ sum(Acreage) FROM parcels
 #4. What is the total net assessed value of all non-taxable parcels?
 
 ```{sql connection=parcelsdb}
-SELECT sum(Net_AV) FROM parcels WHERE NonTaxCode >0
+SELECT sum(Net_AV) AS "Total Assessed Value" FROM parcels WHERE NonTaxCode >0;
 ```
-
+Only count cells where NonTaxCode is over 0 to get rid of taxed properties.
 
 #5.What are the 10 largest property holders, by acreage?
-
-
 ```{sql connection=parcelsdb}
 
-SELECT Acreage, M_Address1, M_Address2,sum(Acreage) 
+SELECT Acreage, M_Address1, M_Address2, sum(Acreage) AS "Total Acreage of Properties"
 FROM parcels
 WHERE M_Address1 AND M_Address2 != 'NA' 
-GROUP BY M_Address1
+GROUP BY M_Address1 
 ORDER BY  Acreage DESC
+LIMIT 10; 
 ```
-
+Only count cells where M_Address1 and M_Address2 is not NA to get rid of properties with no associated address.
 
 #6. What are the 10 largest property holders, by net assessed value?
 
 ```{sql connection=parcelsdb}
 
-SELECT Acreage, M_Address1, M_Address2,sum(Net_AV) 
+SELECT Acreage, M_Address1, M_Address2,sum(Net_AV) AS "Total Assessed Value of Properties"
 FROM parcels
 WHERE M_Address1 AND M_Address2 != 'NA' 
 GROUP BY M_Address1
 ORDER BY  Net_AV DESC
+LIMIT 10;
 ```
-```
+
+Only count cells where M_Address1 and M_Address2 is not NA to get rid of properties with no associated address.
