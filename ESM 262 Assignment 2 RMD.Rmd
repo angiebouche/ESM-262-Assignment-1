@@ -1,0 +1,168 @@
+---
+title: "Assignment 2 RMD"
+author: "Angie Bouche"
+date: "May 14, 2019"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+library(tidyverse) #load tidyverse
+library(DBI)
+
+
+```
+
+#Part 1: Import and Tidy
+
+#1. Load raw data into `parcels_raw` tibble
+```{r}
+parcels_raw <-   read_delim(
+    "Santa_Barbara_County_parcels_2011.csv",
+    delim = ",",
+    col_types = cols(.default = col_character()) #read in parcels data csv and convert to tibble
+  )
+
+parcels_raw
+```
+
+#2/3. Create `parcels` tibble with only certain columns. Change na values. Convert columns to appropriate type
+```{r}
+
+parcels<- parcels_raw %>% 
+  select(UseCode, APN, Situs1, Situs2, Acreage, NonTaxCode, AgPres, LandValue, Net_Impr, Net_AV, M_Address1, M_Address2) %>% #select appropriate columns for parcels tibble
+  mutate(Net_AV, ifelse(Net_AV<0, NA, Net_AV), na = "", na = "0")#remove any negative assessment values, change 'space' and '0' placeholders to NA
+  
+
+parcels$Acreage=parse_double(parcels$Acreage) #convert numerical data columns from characters
+parcels$LandValue= parse_double(parcels$LandValue)
+parcels$Net_Impr = parse_double(parcels$Net_Impr)
+parcels$Net_AV = parse_double(parcels$Net_AV)
+
+
+parcels
+
+```
+
+#4. Format data into an SQL Database file
+```{r}
+db <- dbConnect(RSQLite::SQLite(), dbname = "parcels.db")#connect Rmd SQL chunk to SQLite database
+
+copy_to("parcels.db", parcels)
+
+parcels_db <- tbl(db, "parcels.db")
+
+
+```
+
+#Part 2: Analyze
+
+#1. 10 most frequently occurring land uses (descending order)
+```{sql connection=db}
+
+copy_to(db, use_codes)
+
+
+SELECT UseCode
+FROM   Parcels JOIN use_codes
+ON     UseCode = UseCode;
+
+SELECT UseCOde FROM Parcels ORDER BY quant DESC;
+
+```
+
+#2. How many acres are in agricultural preserves?
+```{r}
+
+ag<- parcels %>% 
+  filter(AgPres!= "NA") %>% 
+  summarize(sum(Acreage)) #select agricultural preserve rows, and sum
+
+ag
+
+
+```
+
+```{sql connection=db}
+
+SELECT sum(*) FROM parcels WHERE AgPres = NOT 'NA' 
+
+
+```
+
+#3. What is the mean net assessed value per acre of the entire county?
+```{r}
+mean_nav<-parcels %>% 
+  select(Acreage, Net_AV) %>% 
+  summarize (mean = (sum(Net_AV)/sum(Acreage))) #select acreage and net assessed value columns, and average assessed value per acre
+  
+mean_nav
+  
+```
+
+```{sql connection=db}
+SELECT avg(sum(Acreage)/ sum(Net_AV)) FROM parcels 
+
+```
+
+
+#4. What is the total net assessed value of all non-taxable parcels?
+```{r}
+nav_nontax <- parcels %>% 
+  select(NonTaxCode, Net_AV) %>%
+  filter(NonTaxCode != "NA", Net_AV != "NA") %>% 
+  summarize(sum(Net_AV))
+
+nav_nontax
+
+```
+
+```{sql connection=db}
+SELECT sum(Net_AV) FROM parcels WHERE NonTAxCode = NOT 'NA'
+```
+
+
+#5.What are the 10 largest property holders, by acreage?
+```{r}
+topten_acres <- parcels %>% 
+  filter(M_Address1 != "NA", M_Address2 != "NA") %>% #filter to include only properties with an owner
+  group_by(M_Address1, M_Address2) %>% #group by owner
+  summarize(sum_col = sum(Acreage)) %>%  
+  arrange(-sum_col) %>% 
+  head(10) #add up acreage for each owner, arrange in descending order, select top 10 owners and their land mass
+  
+topten_acres
+
+```
+
+```{sql connection=db}
+
+SELECT sum(Acreage) FROM parcels 
+WHERE M_Address1 = NOT 'NA'
+WHERE M_Address2 = NOT 'NA'
+ORDER BY Acreage DESC
+```
+
+
+#6. What are the 10 largest property holders, by net assessed value?
+```{r}
+
+topten_acres <- parcels %>% 
+  select(Net_AV, M_Address1, M_Address2) %>% 
+  filter(M_Address1 != "NA", M_Address2 != "NA") %>% #filter to include only properties with an owner
+  group_by(M_Address1, M_Address2) %>% #group by owner
+  summarize(sum_col2 = sum(Net_AV)) %>%  
+  arrange(-sum_col2) %>%
+  head(10) #sum up value of property for each owner, arrange by descending order, select top 10 owners
+  
+topten_acres
+
+```
+
+```{sql connection=db}
+
+SELECT sum(Net_AV) FROM parcels 
+WHERE M_Address1 = NOT 'NA'
+WHERE M_Address2 = NOT 'NA'
+ORDER BY Net_AV DESC
+```
