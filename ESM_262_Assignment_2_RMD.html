@@ -11,7 +11,7 @@
 
 <meta name="author" content="Angie Bouche" />
 
-<meta name="date" content="2019-05-14" />
+<meta name="date" content="2019-05-17" />
 
 <title>Assignment 2 RMD</title>
 
@@ -124,7 +124,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Assignment 2 RMD</h1>
 <h4 class="author"><em>Angie Bouche</em></h4>
-<h4 class="date"><em>May 14, 2019</em></h4>
+<h4 class="date"><em>May 17, 2019</em></h4>
 
 </div>
 
@@ -202,7 +202,7 @@ parcels</code></pre>
 <h1>4. Format data into an SQL Database file</h1>
 <pre class="r"><code>parcelsdb &lt;- dbConnect(RSQLite::SQLite(), dbname = &quot;parcels.db&quot;)#connect Rmd SQL chunk to SQLite database
 
-dbWriteTable(conn = parcelsdb, name = &quot;parcels&quot;, value = parcels, overwrite = TRUE) # first argument is conenction handle, second is name for table in database, third is the dataframe itself</code></pre>
+dbWriteTable(conn = parcelsdb, name = &quot;parcels&quot;, value = parcels, overwrite = TRUE) # Turn tibble into a database. first argument is conenction handle, second is name for table in database, third is the dataframe itself. Overwrite to allow the code to be run multiple times.</code></pre>
 </div>
 <div id="part-2-analyze" class="section level1">
 <h1>Part 2: Analyze</h1>
@@ -213,17 +213,17 @@ dbWriteTable(conn = parcelsdb, name = &quot;parcels&quot;, value = parcels, over
   ) %&gt;% 
   rename (UseCode2 = UseCode)
 
-dbWriteTable(conn = parcelsdb, name = &quot;usecodes&quot;, value = usecodes, overwrite = TRUE) # first argument is conenction handle, second is name for table in database, third is the dataframe itself</code></pre>
+dbWriteTable(conn = parcelsdb, name = &quot;usecodes&quot;, value = usecodes, overwrite = TRUE) # TUrn tibble into a database. first argument is conenction handle, second is name for table in database, third is the dataframe itself</code></pre>
 </div>
 <div id="most-frequently-occurring-land-uses-descending-order" class="section level1">
 <h1>1. 10 most frequently occurring land uses (descending order)</h1>
 <pre class="sql"><code>
-
-SELECT UseCode, CodeDesc, count(UseCode) AS &quot;Number of Observations&quot;
+SELECT UseCode, CodeDesc, count(UseCode) AS &quot;Number of Properties&quot;
 FROM   parcels
 JOIN usecodes ON Parcels.UseCode = usecodes.UseCode2
 GROUP BY UseCode
-ORDER By count(UseCode) DESC;
+ORDER By count(UseCode) DESC
+LIMIT 10;
 </code></pre>
 <div class="knitsql-table">
 <table>
@@ -232,7 +232,7 @@ ORDER By count(UseCode) DESC;
 <tr class="header">
 <th align="left">UseCode</th>
 <th align="left">CodeDesc</th>
-<th align="right">Number of Observations</th>
+<th align="right">Number of Properties</th>
 </tr>
 </thead>
 <tbody>
@@ -293,39 +293,40 @@ ORDER By count(UseCode) DESC;
 <div id="how-many-acres-are-in-agricultural-preserves" class="section level1">
 <h1>2. How many acres are in agricultural preserves?</h1>
 <pre class="sql"><code>
-SELECT sum(Acreage) FROM parcels WHERE AgPres &gt;0
+SELECT round(sum(Acreage),2) AS &quot;Total Acreage&quot; FROM parcels WHERE AgPres &gt;0; 
 </code></pre>
 <div class="knitsql-table">
 <table>
 <caption>1 records</caption>
 <thead>
 <tr class="header">
-<th align="left">sum(Acreage)</th>
+<th align="left">Total Acreage</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">549563.3511</td>
+<td align="left">549563.35</td>
 </tr>
 </tbody>
 </table>
 </div>
+<p>Only count cells where AgPres is over 0 to get rid of non-agricultural properties.</p>
 </div>
 <div id="what-is-the-mean-net-assessed-value-per-acre-of-the-entire-county" class="section level1">
 <h1>3. What is the mean net assessed value per acre of the entire county?</h1>
-<pre class="sql"><code>SELECT sum(Net_AV)/ sum(Acreage) FROM parcels
+<pre class="sql"><code>SELECT round(sum(Net_AV)/ sum(Acreage), 2) AS &quot;Average Assessed Value per Acre&quot; FROM parcels;
 </code></pre>
 <div class="knitsql-table">
 <table>
 <caption>1 records</caption>
 <thead>
 <tr class="header">
-<th align="left">sum(Net_AV)/ sum(Acreage)</th>
+<th align="left">Average Assessed Value per Acre</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">34202.6288334524</td>
+<td align="left">34202.63</td>
 </tr>
 </tbody>
 </table>
@@ -333,13 +334,13 @@ SELECT sum(Acreage) FROM parcels WHERE AgPres &gt;0
 </div>
 <div id="what-is-the-total-net-assessed-value-of-all-non-taxable-parcels" class="section level1">
 <h1>4. What is the total net assessed value of all non-taxable parcels?</h1>
-<pre class="sql"><code>SELECT sum(Net_AV) FROM parcels WHERE NonTaxCode &gt;0</code></pre>
+<pre class="sql"><code>SELECT sum(Net_AV) AS &quot;Total Assessed Value&quot; FROM parcels WHERE NonTaxCode &gt;0;</code></pre>
 <div class="knitsql-table">
 <table>
 <caption>1 records</caption>
 <thead>
 <tr class="header">
-<th align="left">sum(Net_AV)</th>
+<th align="left">Total Assessed Value</th>
 </tr>
 </thead>
 <tbody>
@@ -349,175 +350,157 @@ SELECT sum(Acreage) FROM parcels WHERE AgPres &gt;0
 </tbody>
 </table>
 </div>
+<p>Only count cells where NonTaxCode is over 0 to get rid of taxed properties.</p>
 </div>
 <div id="what-are-the-10-largest-property-holders-by-acreage" class="section level1">
 <h1>5.What are the 10 largest property holders, by acreage?</h1>
 <pre class="sql"><code>
-SELECT Acreage, M_Address1, M_Address2,sum(Acreage) 
+SELECT M_Address1, M_Address2, sum(Acreage) AS &quot;Total Acreage of Properties&quot;
 FROM parcels
-WHERE M_Address1 AND M_Address2 != 'NA' 
-GROUP BY M_Address1
-ORDER BY  Acreage DESC</code></pre>
+WHERE M_Address1 IS NOT NULL AND M_Address2 IS NOT NULL 
+GROUP BY M_Address1, M_Address2
+ORDER BY  &quot;Total Acreage of Properties&quot; DESC
+LIMIT 10; </code></pre>
 <div class="knitsql-table">
 <table>
 <caption>Displaying records 1 - 10</caption>
 <thead>
 <tr class="header">
-<th align="right">Acreage</th>
 <th align="left">M_Address1</th>
 <th align="left">M_Address2</th>
-<th align="right">sum(Acreage)</th>
+<th align="right">Total Acreage of Properties</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="right">16640.00</td>
-<td align="left">201 MISSION ST 4TH FLR</td>
-<td align="left">SAN FRANCISCO CA 94105 1831</td>
-<td align="right">16640.00</td>
+<td align="left">785 MARKET ST</td>
+<td align="left">SAN FRANCISCO CA 94103</td>
+<td align="right">37860.00</td>
 </tr>
 <tr class="even">
-<td align="right">10517.47</td>
 <td align="left">166 PARADISE RD</td>
 <td align="left">SANTA BARBARA CA 93105</td>
 <td align="right">30109.71</td>
 </tr>
 <tr class="odd">
-<td align="right">6358.00</td>
-<td align="left">870 MARKET ST.SUITE 1100</td>
-<td align="left">SAN FRANCISCO CA 94102</td>
-<td align="right">6358.00</td>
+<td align="left">PO BOX 573</td>
+<td align="left">LAKE ARROWHEAD CA 92352</td>
+<td align="right">24262.89</td>
 </tr>
 <tr class="even">
-<td align="right">6263.49</td>
-<td align="left">600 HARRISON ST #600</td>
-<td align="left">SAN FRANCISCO CA 94107 1372</td>
-<td align="right">6263.49</td>
+<td align="left">870 MARKET ST 1100</td>
+<td align="left">SAN FRANCISCO CA 94102</td>
+<td align="right">23833.67</td>
 </tr>
 <tr class="odd">
-<td align="right">4592.60</td>
-<td align="left">870 MARKET ST SUITE 1100</td>
-<td align="left">SAN FRANCISCO CA 94102</td>
-<td align="right">4952.66</td>
-</tr>
-<tr class="even">
-<td align="right">4390.92</td>
 <td align="left">2491 BULL CANYON RD</td>
 <td align="left">SANTA MARIA CA 93454</td>
 <td align="right">18594.80</td>
 </tr>
-<tr class="odd">
-<td align="right">3459.16</td>
-<td align="left">115 E MICHELTORENA ST 200</td>
-<td align="left">SANTA BARBARA CA 93101</td>
-<td align="right">3673.14</td>
-</tr>
 <tr class="even">
-<td align="right">2762.00</td>
-<td align="left">785 MARKET ST</td>
-<td align="left">SAN FRANCISCO CA 94103</td>
-<td align="right">37860.00</td>
+<td align="left">201 MISSION ST 4TH FLR</td>
+<td align="left">SAN FRANCISCO CA 94105 1831</td>
+<td align="right">16640.00</td>
 </tr>
 <tr class="odd">
-<td align="right">2438.16</td>
-<td align="left">300 LAKESIDE DR 17TH FLR</td>
-<td align="left">OAKLAND CA 94612 3550</td>
-<td align="right">2438.16</td>
+<td align="left">PO BOX 340</td>
+<td align="left">SAN LUCAS CA 93954</td>
+<td align="right">15373.61</td>
 </tr>
 <tr class="even">
-<td align="right">1712.61</td>
-<td align="left">11111 SANTA MONICA BLVD</td>
-<td align="left">LOS ANGELES CA 90025</td>
-<td align="right">1713.86</td>
+<td align="left">PO BOX 9</td>
+<td align="left">SAN JUAN CAPISTRANO CA 92693</td>
+<td align="right">10170.02</td>
+</tr>
+<tr class="odd">
+<td align="left">2300 EAST VALLEY RD</td>
+<td align="left">SANTA BARBARA CA 93108</td>
+<td align="right">9800.95</td>
+</tr>
+<tr class="even">
+<td align="left">PO BOX 338</td>
+<td align="left">SANTA YNEZ CA 93460</td>
+<td align="right">9189.45</td>
 </tr>
 </tbody>
 </table>
 </div>
+<p>Only count cells where M_Address1 and M_Address2 is not null to get rid of properties with no associated address.</p>
 </div>
 <div id="what-are-the-10-largest-property-holders-by-net-assessed-value" class="section level1">
 <h1>6. What are the 10 largest property holders, by net assessed value?</h1>
 <pre class="sql"><code>
-SELECT Acreage, M_Address1, M_Address2,sum(Net_AV) 
+SELECT M_Address1, M_Address2,sum(Net_AV) AS &quot;Total Assessed Value of Properties&quot;
 FROM parcels
-WHERE M_Address1 AND M_Address2 != 'NA' 
-GROUP BY M_Address1
-ORDER BY  Net_AV DESC</code></pre>
+WHERE  M_Address1 IS NOT NULL AND M_Address2 IS NOT NULL 
+GROUP BY M_Address1, M_Address2
+ORDER BY  &quot;Total Assessed Value of Properties&quot; DESC
+LIMIT 10;</code></pre>
 <div class="knitsql-table">
 <table>
 <caption>Displaying records 1 - 10</caption>
 <thead>
 <tr class="header">
-<th align="right">Acreage</th>
 <th align="left">M_Address1</th>
 <th align="left">M_Address2</th>
-<th align="right">sum(Net_AV)</th>
+<th align="right">Total Assessed Value of Properties</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="right">826.24</td>
 <td align="left">737 GARDEN ST</td>
 <td align="left">SANTA BARBARA CA 93101</td>
 <td align="right">242575885</td>
 </tr>
 <tr class="even">
-<td align="right">30.03</td>
+<td align="left">735 ANACAPA ST</td>
+<td align="left">SANTA BARBARA CA 93101</td>
+<td align="right">190784490</td>
+</tr>
+<tr class="odd">
+<td align="left">21 E VICTORIA ST 200</td>
+<td align="left">SANTA BARBARA CA 93101</td>
+<td align="right">179642731</td>
+</tr>
+<tr class="even">
+<td align="left">PO BOX 20130</td>
+<td align="left">SANTA BARBARA CA 93120 0130</td>
+<td align="right">177735038</td>
+</tr>
+<tr class="odd">
+<td align="left">280 CHESTNUT</td>
+<td align="left">WESTMONT IL 60559</td>
+<td align="right">157323864</td>
+</tr>
+<tr class="even">
+<td align="left">PO BOX 660248</td>
+<td align="left">DALLAS TX 75266 0248</td>
+<td align="right">151925292</td>
+</tr>
+<tr class="odd">
+<td align="left">1260 CHANNEL DR</td>
+<td align="left">SANTA BARBARA CA 93105</td>
+<td align="right">120001340</td>
+</tr>
+<tr class="even">
 <td align="left">645 FIFTH AVE 8</td>
 <td align="left">NEW YORK NY 10022</td>
 <td align="right">118000000</td>
 </tr>
 <tr class="odd">
-<td align="right">20.78</td>
 <td align="left">500 STEVENS AVE 100</td>
 <td align="left">SOLANA BEACH CA 92075</td>
 <td align="right">107926369</td>
 </tr>
 <tr class="even">
-<td align="right">21.85</td>
-<td align="left">633 E CABRILLO BLVD</td>
-<td align="left">SANTA BARBARA CA 93103</td>
-<td align="right">82206252</td>
-</tr>
-<tr class="odd">
-<td align="right">0.39</td>
-<td align="left">1112 SANTA BARBARA ST</td>
-<td align="left">SANTA BARBARA CA 93101</td>
-<td align="right">75963032</td>
-</tr>
-<tr class="even">
-<td align="right">11.56</td>
-<td align="left">1224 COAST VILLAGE</td>
-<td align="left">SANTA BARBARA CA 93108</td>
-<td align="right">55761473</td>
-</tr>
-<tr class="odd">
-<td align="right">6.98</td>
-<td align="left">100 N HOPE AVE 2</td>
-<td align="left">SANTA BARBARA CA 93110</td>
-<td align="right">113227752</td>
-</tr>
-<tr class="even">
-<td align="right">1.93</td>
-<td align="left">125 E ANAPAMU ST</td>
-<td align="left">SANTA BARBARA CA 93101</td>
-<td align="right">41367499</td>
-</tr>
-<tr class="odd">
-<td align="right">0.39</td>
-<td align="left">10940 WILSHIRE BLVD 1400</td>
-<td align="left">LOS ANGELES CA 90024</td>
-<td align="right">32211293</td>
-</tr>
-<tr class="even">
-<td align="right">13.68</td>
-<td align="left">6359 AUBURN BLVD B</td>
-<td align="left">CITRUS HEIGHTS CA 95621</td>
-<td align="right">43226491</td>
+<td align="left">2235 FARADAY AVE O</td>
+<td align="left">CARLSBAD CA 92008</td>
+<td align="right">104533906</td>
 </tr>
 </tbody>
 </table>
 </div>
-<p>```</p>
+<p>Only count cells where M_Address1 and M_Address2 is not null to get rid of properties with no associated address.</p>
 </div>
 
 

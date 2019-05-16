@@ -1,7 +1,7 @@
 ---
 title: "Assignment 2 RMD"
 author: "Angie Bouche"
-date: "May 14, 2019"
+date: "May 17, 2019"
 output: html_document
 ---
 
@@ -47,7 +47,7 @@ parcels
 ```{r}
 parcelsdb <- dbConnect(RSQLite::SQLite(), dbname = "parcels.db")#connect Rmd SQL chunk to SQLite database
 
-dbWriteTable(conn = parcelsdb, name = "parcels", value = parcels, overwrite = TRUE) # first argument is conenction handle, second is name for table in database, third is the dataframe itself
+dbWriteTable(conn = parcelsdb, name = "parcels", value = parcels, overwrite = TRUE) # Turn tibble into a database. first argument is conenction handle, second is name for table in database, third is the dataframe itself. Overwrite to allow the code to be run multiple times.
 
 ```
 
@@ -62,7 +62,7 @@ usecodes<-read_delim(
   ) %>% 
   rename (UseCode2 = UseCode)
 
-dbWriteTable(conn = parcelsdb, name = "usecodes", value = usecodes, overwrite = TRUE) # first argument is conenction handle, second is name for table in database, third is the dataframe itself
+dbWriteTable(conn = parcelsdb, name = "usecodes", value = usecodes, overwrite = TRUE) # TUrn tibble into a database. first argument is conenction handle, second is name for table in database, third is the dataframe itself
 ```
 
 
@@ -82,7 +82,7 @@ LIMIT 10;
 
 ```{sql connection=parcelsdb}
 
-SELECT sum(Acreage) AS "Total Acreage" FROM parcels WHERE AgPres >0; 
+SELECT round(sum(Acreage),2) AS "Total Acreage" FROM parcels WHERE AgPres >0; 
 
 ```
 Only count cells where AgPres is over 0 to get rid of non-agricultural properties.
@@ -90,7 +90,7 @@ Only count cells where AgPres is over 0 to get rid of non-agricultural propertie
 #3. What is the mean net assessed value per acre of the entire county?
 
 ```{sql connection=parcelsdb}
-SELECT sum(Net_AV)/ sum(Acreage) AS "Average Assessed Value per Acre" FROM parcels;
+SELECT round(sum(Net_AV)/ sum(Acreage), 2) AS "Average Assessed Value per Acre" FROM parcels;
 
 ```
 
@@ -105,25 +105,25 @@ Only count cells where NonTaxCode is over 0 to get rid of taxed properties.
 #5.What are the 10 largest property holders, by acreage?
 ```{sql connection=parcelsdb}
 
-SELECT Acreage, M_Address1, M_Address2, sum(Acreage) AS "Total Acreage of Properties"
+SELECT M_Address1, M_Address2, sum(Acreage) AS "Total Acreage of Properties"
 FROM parcels
-WHERE M_Address1 AND M_Address2 != 'NA' 
-GROUP BY M_Address1 
-ORDER BY  Acreage DESC
+WHERE M_Address1 IS NOT NULL AND M_Address2 IS NOT NULL 
+GROUP BY M_Address1, M_Address2
+ORDER BY  "Total Acreage of Properties" DESC
 LIMIT 10; 
 ```
-Only count cells where M_Address1 and M_Address2 is not NA to get rid of properties with no associated address.
+Only count cells where M_Address1 and M_Address2 is not null to get rid of properties with no associated address.
 
 #6. What are the 10 largest property holders, by net assessed value?
 
 ```{sql connection=parcelsdb}
 
-SELECT Acreage, M_Address1, M_Address2,sum(Net_AV) AS "Total Assessed Value of Properties"
+SELECT M_Address1, M_Address2,sum(Net_AV) AS "Total Assessed Value of Properties"
 FROM parcels
-WHERE M_Address1 AND M_Address2 != 'NA' 
-GROUP BY M_Address1
-ORDER BY  Net_AV DESC
+WHERE  M_Address1 IS NOT NULL AND M_Address2 IS NOT NULL 
+GROUP BY M_Address1, M_Address2
+ORDER BY  "Total Assessed Value of Properties" DESC
 LIMIT 10;
 ```
 
-Only count cells where M_Address1 and M_Address2 is not NA to get rid of properties with no associated address.
+Only count cells where M_Address1 and M_Address2 is not null to get rid of properties with no associated address.
