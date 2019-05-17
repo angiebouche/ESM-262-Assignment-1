@@ -1,0 +1,32 @@
+---
+title: "Week 7 - Functions"
+author: "Angie Bouche"
+date: "May 17, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+```{r}
+#Pb = crolling * m *g*V + 1/2 A*pair*cdrag*V3 is the equation - I don't think this equation works though
+
+autopower = function (v, m, a, crolling = 0.015, cdrag = 0.3, g = 9.8, pair= 1.2) {
+  P = (crolling * m * g* v) + (.5*a *pair * cdrag * (v**3)                                                         return(P)}
+  
+autopower(mass = 31752, speed = 30, area = 2.5)
+
+#Answer should be 152176.3  
+
+
+
+```
+
+# Assignment 3:
+## what if we design new highways that have lower rolling coefficients 
+## we can reduce the rolling coefficient by 50%
+## or we can reduce the mean speed to 80 km/h (still with 10% standard deviation)
+## calculate mean power for both (assuming the same car probabilities above)
+## which is better
