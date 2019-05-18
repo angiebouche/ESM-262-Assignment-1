@@ -10,17 +10,72 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 ```
 
-```{r}
-#Pb = crolling * m *g*V + 1/2 A*pair*cdrag*V3 is the equation - I don't think this equation works though
+#### Average power for cars under normal conditions
+```{r sampling}
 
-autopower = function (v, m, a, crolling = 0.015, cdrag = 0.3, g = 9.8, pair= 1.2) {
-  P = (crolling * m * g* v) + (.5*a *pair * cdrag * (v**3)                                                         return(P)}
-  
-autopower(mass = 31752, speed = 30, area = 2.5)
+source("autopower.R") #take function from R file
 
-#Answer should be 152176.3  
+# generate sample speeds from a distribution with 10% sd
+nsample = 100
+speeds = rnorm(mean=10, sd=1, n=nsample)
+
+#generate a data frame from the model
+results = data.frame(speed=speeds, power=NA)
+
+head(results)
+
+results$power = autopower(V=speeds, A=25, m=20000)
+
+#Use graphs to check
+graph_1<- ggplot(results, aes(speed, power/1000))+geom_point()+labs(x="speed in m/s", y="power in kW")
+graph_2 <-ggplot(results, aes(x="Across Speed",y=power/1000))+geom_boxplot()+labs(y="power in kW")
+
+graph_1
+graph_2
+
+#select mass and area of cars
+possible_cars = data.frame(mass=c(31000,45000,38000), area = c(25,30,22))
+
+#enter base speed at 100 kmh and convert to m/s
+speed_base = 100 * 0.28
+
+#set power equation for three cars selected above
+possible_cars$power = autopower(V=speed_base, A = possible_cars$area, m=possible_cars$area)
 
 
+possible_cars$prob = c(0.4, 0.4, 0.2)
+
+#assume normal distribution and set variable for speed assuming 100 kmh with 10% sd
+m = 100*0.277
+nsample = 100
+speeds = rlnorm(mean=m, sd=0.1*m, nsample)
+summary(speeds)
+
+results = data.frame(speed=speeds, power=NA)
+
+#select all possible cars in distribution
+possible_cars$row = seq(from=1, to=nrow(possible_cars))
+possible_cars
+
+whichcar = base::sample(possible_cars$row, size=nsample, prob=possible_cars$prob, replace=TRUE)
+whichcar #shows you 100 observations choosing a number between 1 and 3 since three car types are listed
+#this is basically bootstrapping
+
+head(whichcar)#begining of list of possible car selections
+
+#show masses for selected cars in distribution
+results$mass = possible_cars$mass[whichcar]
+
+head(results)
+
+# Add areas for selected cars
+results$area = possible_cars$area[whichcar]
+
+# power for all of our samples of speed and car type
+results$power = autopower(A=results$area, V=results$speed, m=results$mass)
+
+summary(results$power)
+ggplot(results,aes(x="", y=power/1000))+geom_boxplot(fill="red")+labs("Power kW")
 
 ```
 
