@@ -1,4 +1,4 @@
-#Power for Cars function - baseline
+#Power for Cars function - change speed limit from 100 to 80
 
 #Define parameters and units
 #' @param cdrag coefficient due to drag default=0.3 
@@ -16,5 +16,3 @@ autopower = function(V, m, A, cdrag=0.3, crolling=0.015,pair=1.2,g=9.8) {
 }
 
 autopower(m = 31752, V= 30, A= 2.5)
-
-#Answer should be 152176.3  

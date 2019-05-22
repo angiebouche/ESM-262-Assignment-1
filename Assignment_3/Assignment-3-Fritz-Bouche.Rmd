@@ -1,6 +1,6 @@
 ---
 title: "Week 7 - Functions"
-author: "Angie Bouche"
+author: "Angie Bouche, Joslyn Fritz"
 date: "May 17, 2019"
 output: html_document
 ---
@@ -10,14 +10,15 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 ```
 
-#### Average power for cars under normal conditions
+## Average power for cars under normal conditions
+
 ```{r sampling}
 
 source("autopower.R") #take function from R file
 
 # generate sample speeds from a distribution with 10% sd
 nsample = 100
-speeds = rnorm(mean=10, sd=1, n=nsample)
+speeds = rnorm(mean=27, sd=10, n=nsample)
 
 #generate a data frame from the model
 results = data.frame(speed=speeds, power=NA)
@@ -29,39 +30,46 @@ results$power = autopower(V=speeds, A=25, m=20000)
 #Use graphs to check
 graph_1<- ggplot(results, aes(speed, power/1000))+geom_point()+labs(x="speed in m/s", y="power in kW")
 graph_2 <-ggplot(results, aes(x="Across Speed",y=power/1000))+geom_boxplot()+labs(y="power in kW")
-
 graph_1
 graph_2
 
+
 #select mass and area of cars
 possible_cars = data.frame(mass=c(31000,45000,38000), area = c(25,30,22))
+ 
 
 #enter base speed at 100 kmh and convert to m/s
 speed_base = 100 * 0.28
 
 #set power equation for three cars selected above
-possible_cars$power = autopower(V=speed_base, A = possible_cars$area, m=possible_cars$area)
-
+possible_cars$power = autopower(V=speed_base, A = possible_cars$area, m=possible_cars$mass)
+ 
 
 possible_cars$prob = c(0.4, 0.4, 0.2)
 
 #assume normal distribution and set variable for speed assuming 100 kmh with 10% sd
-m = 100*0.277
+mn = log(100*0.277)
 nsample = 100
-speeds = rlnorm(mean=m, sd=0.1*m, nsample)
+speeds = rlnorm(mean=mn, sd=0.1*mn, nsample)
 summary(speeds)
+ 
 
 results = data.frame(speed=speeds, power=NA)
+
 
 #select all possible cars in distribution
 possible_cars$row = seq(from=1, to=nrow(possible_cars))
 possible_cars
 
+ 
 whichcar = base::sample(possible_cars$row, size=nsample, prob=possible_cars$prob, replace=TRUE)
 whichcar #shows you 100 observations choosing a number between 1 and 3 since three car types are listed
+
 #this is basically bootstrapping
 
+
 head(whichcar)#begining of list of possible car selections
+
 
 #show masses for selected cars in distribution
 results$mass = possible_cars$mass[whichcar]
@@ -71,17 +79,187 @@ head(results)
 # Add areas for selected cars
 results$area = possible_cars$area[whichcar]
 
+ 
+
 # power for all of our samples of speed and car type
+
 results$power = autopower(A=results$area, V=results$speed, m=results$mass)
 
 summary(results$power)
 ggplot(results,aes(x="", y=power/1000))+geom_boxplot(fill="red")+labs("Power kW")
 
+
+
 ```
 
-# Assignment 3:
-## what if we design new highways that have lower rolling coefficients 
-## we can reduce the rolling coefficient by 50%
-## or we can reduce the mean speed to 80 km/h (still with 10% standard deviation)
-## calculate mean power for both (assuming the same car probabilities above)
-## which is better
+## Average power for cars when rolling coefficient is reduced by half
+```{r autopower_cr}
+source("autopower_cr.R")
+
+# generate sample speeds from a distribution with 10% sd
+nsample_cr = 100
+speeds_cr = rnorm(mean=27, sd=10, n=nsample_cr)
+
+#generate a data frame from the model
+results_cr = data.frame(speed=speeds_cr, power=NA)
+
+head(results_cr)
+
+results_cr$power = autopower(V=speeds, A=25, m=20000)
+
+#Use graphs to check
+graph_1_cr<- ggplot(results_cr, aes(speed, power/1000))+geom_point()+labs(x="speed in m/s", y="power in kW")
+graph_2_cr <-ggplot(results_cr, aes(x="Across Speed",y=power/1000))+geom_boxplot()+labs(y="power in kW")
+graph_1_cr
+graph_2_cr
+
+
+#select mass and area of cars
+possible_cars_cr = data.frame(mass=c(31000,45000,38000), area = c(25,30,22))
+ 
+
+#enter base speed at 100 kmh and convert to m/s
+speed_base_cr = 100 * 0.28
+
+#set power equation for three cars selected above
+possible_cars_cr$power = autopower(V=speed_base_cr, A = possible_cars_cr$area, m=possible_cars_cr$mass)
+ 
+
+possible_cars_cr$prob = c(0.4, 0.4, 0.2)
+
+#assume normal distribution and set variable for speed assuming 100 kmh with 10% sd
+mn_cr = log(100*0.277)
+nsample_cr = 100
+speeds_cr = rlnorm(mean=mn, sd=0.1*mn, nsample)
+summary(speeds_cr)
+ 
+
+results_cr = data.frame(speed=speeds_cr, power=NA)
+
+
+#select all possible cars in distribution
+possible_cars_cr$row = seq(from=1, to=nrow(possible_cars_cr))
+possible_cars_cr
+
+ 
+whichcar_cr = base::sample(possible_cars_cr$row, size=nsample_cr, prob=possible_cars_cr$prob, replace=TRUE)
+whichcar_cr #shows you 100 observations choosing a number between 1 and 3 since three car types are listed
+
+#this is basically bootstrapping
+
+
+head(whichcar_cr)#begining of list of possible car selections
+
+
+#show masses for selected cars in distribution
+results_cr$mass = possible_cars_cr$mass[whichcar_cr]
+
+head(results_cr)
+
+# Add areas for selected cars
+results_cr$area = possible_cars_cr$area[whichcar_cr]
+
+ 
+
+# power for all of our samples of speed and car type
+
+results_cr$power = autopower(A=results_cr$area, V=results_cr$speed, m=results_cr$mass)
+
+summary(results_cr$power)
+ggplot(results_cr,aes(x="", y=power/1000))+geom_boxplot(fill="red")+labs("Power kW")
+
+
+
+
+```
+
+##AVerage power for cars when speed is reduced to 80 kmh on average (Assuming 10% standard deviation)
+```{r autpower_sp}
+source("autopower.R") #take function from R file
+
+# generate sample speeds from a distribution with 10% sd
+nsample_sp = 100
+speeds_sp = rnorm(mean=22.4, sd=8, n=nsample_sp)
+
+#generate a data frame from the model
+results_sp = data.frame(speed=speeds_sp, power=NA)
+
+head(results_sp)
+
+results_sp$power = autopower(V=speeds_sp, A=25, m=20000)
+
+#Use graphs to check
+graph_1<- ggplot(results_sp, aes(speed, power/1000))+geom_point()+labs(x="speed in m/s", y="power in kW")
+graph_2 <-ggplot(results_sp, aes(x="Across Speed",y=power/1000))+geom_boxplot()+labs(y="power in kW")
+graph_1
+graph_2
+
+
+#select mass and area of cars
+possible_cars_sp = data.frame(mass=c(31000,45000,38000), area = c(25,30,22))
+ 
+
+#enter base speed at 100 kmh and convert to m/s
+speed_base_sp = 100 * 0.28
+
+#set power equation for three cars selected above
+possible_cars_sp$power = autopower(V=speed_base_sp, A = possible_cars_sp$area, m=possible_cars_sp$mass)
+ 
+
+possible_cars_sp$prob = c(0.4, 0.4, 0.2)
+
+#assume normal distribution and set variable for speed assuming 100 kmh with 10% sd
+mn_sp = log(100*0.277)
+nsample_sp = 100
+speeds_sp = rlnorm(mean=mn_sp, sd=0.1*mn_sp, nsample_sp)
+summary(speeds_sp)
+ 
+
+results_sp = data.frame(speed=speeds_sp, power=NA)
+
+
+#select all possible cars in distribution
+possible_cars_sp$row = seq(from=1, to=nrow(possible_cars_sp))
+possible_cars_sp
+
+ 
+whichcar_sp = base::sample(possible_cars_sp$row, size=nsample_sp, prob=possible_cars_sp$prob, replace=TRUE)
+whichcar_sp #shows you 100 observations choosing a number between 1 and 3 since three car types are listed
+
+#this is basically bootstrapping
+
+
+head(whichcar_sp)#begining of list of possible car selections
+
+
+#show masses for selected cars in distribution
+results_sp$mass = possible_cars_sp$mass[whichcar_sp]
+
+head(results_sp)
+
+# Add areas for selected cars
+results_sp$area = possible_cars_sp$area[whichcar_sp]
+
+ 
+
+# power for all of our samples of speed and car type
+
+results_sp$power = autopower(A=results_sp$area, V=results_sp$speed, m=results_sp$mass)
+
+summary(results_sp$power)
+ggplot(results_sp,aes(x="", y=power/1000))+geom_boxplot(fill="red")+labs("Power kW")
+
+
+
+
+```
+
+
+## Assignment 3:
+### what if we design new highways that have lower rolling coefficients 
+### we can reduce the rolling coefficient by 50%
+### or we can reduce the mean speed to 80 km/h (still with 10% standard deviation)
+### calculate mean power for both (assuming the same car probabilities above)
+### which is better
+
+Based on our analysis, the mean power used over a normal distribution of car weight and surface areas, assuming a speed limit of 100km/h with standard deviation of 10%, rolling coefficient due to friction of 0.15, oefficient due to drag of 0.3, and air pressure of 1.2 kg/m^3 is `r mean(results$power)`w. If we reduce the rolling coefficient/friction of the road by half (to 0.075) the mean power is reduced to `r mean(results_cr$power)`w. Alternatively, if we reduce the speed limit of the road to 80 km/h the mean power is reduced to `r mean(results_sp$power)`w. Lowering the speed limit is less effective at reducing power needed, however this technique would be less expensive to implement. 
