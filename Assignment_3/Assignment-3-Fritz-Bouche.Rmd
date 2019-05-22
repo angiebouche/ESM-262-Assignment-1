@@ -199,8 +199,8 @@ graph_2
 possible_cars_sp = data.frame(mass=c(31000,45000,38000), area = c(25,30,22))
  
 
-#enter base speed at 100 kmh and convert to m/s
-speed_base_sp = 100 * 0.28
+#enter base speed at 80 kmh and convert to m/s
+speed_base_sp = 80 * 0.28
 
 #set power equation for three cars selected above
 possible_cars_sp$power = autopower(V=speed_base_sp, A = possible_cars_sp$area, m=possible_cars_sp$mass)
@@ -208,8 +208,8 @@ possible_cars_sp$power = autopower(V=speed_base_sp, A = possible_cars_sp$area, m
 
 possible_cars_sp$prob = c(0.4, 0.4, 0.2)
 
-#assume normal distribution and set variable for speed assuming 100 kmh with 10% sd
-mn_sp = log(100*0.277)
+#assume normal distribution and set variable for speed assuming 80 kmh with 10% sd
+mn_sp = log(80*0.277)
 nsample_sp = 100
 speeds_sp = rlnorm(mean=mn_sp, sd=0.1*mn_sp, nsample_sp)
 summary(speeds_sp)
