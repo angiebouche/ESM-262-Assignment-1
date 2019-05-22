@@ -173,7 +173,7 @@ ggplot(results_cr,aes(x="", y=power/1000))+geom_boxplot(fill="red")+labs("Power 
 
 ```
 
-##AVerage power for cars when speed is reduced to 80 kmh on average (Assuming 10% standard deviation)
+##Average power for cars when speed is reduced to 80 kmh on average (Assuming 10% standard deviation)
 ```{r autpower_sp}
 source("autopower.R") #take function from R file
 
@@ -256,10 +256,5 @@ ggplot(results_sp,aes(x="", y=power/1000))+geom_boxplot(fill="red")+labs("Power 
 
 
 ## Assignment 3:
-what if we design new highways that have lower rolling coefficients 
-we can reduce the rolling coefficient by 50%
-or we can reduce the mean speed to 80 km/h (still with 10% standard deviation)
-calculate mean power for both (assuming the same car probabilities above)
-which is better
 
-Based on our analysis, the mean power used over a normal distribution of car weight and surface areas, assuming a speed limit of 100km/h with standard deviation of 10%, rolling coefficient due to friction of 0.15, oefficient due to drag of 0.3, and air pressure of 1.2 kg/m^3 is `r mean(results$power)`w. If we reduce the rolling coefficient/friction of the road by half (to 0.075) the mean power is reduced to `r mean(results_cr$power)`w. Alternatively, if we reduce the speed limit of the road to 80 km/h the mean power is reduced to `r mean(results_sp$power)`w. Lowering the speed limit is less effective at reducing power needed, however this technique would be less expensive to implement. 
+Based on our analysis, the mean power used over a normal distribution of car weight and surface areas, assuming a speed limit of 100km/h with standard deviation of 10%, rolling coefficient due to friction of 0.015, coefficient due to drag of 0.3, and air pressure of 1.2 kg/m^3 is `r round(mean(results$power), 0)`w. If we reduce the rolling coefficient/friction of the road by half (to 0.0075) the mean power is reduced to `r round(mean(results_cr$power),0)`w. Alternatively, if we reduce the speed limit of the road to 80 km/h the mean power is reduced to `r round(mean(results_sp$power),0)`w. Lowering the speed limit is more effective at reducing power needed, and this technique would be less expensive to implement. 
