@@ -18,7 +18,7 @@ source("autopower.R") #take function from R file
 
 # generate sample speeds from a distribution with 10% sd
 nsample = 100
-speeds = rnorm(mean=27, sd=10, n=nsample)
+speeds = rnorm(mean=28, sd=2.8, n=nsample)
 
 #generate a data frame from the model
 results = data.frame(speed=speeds, power=NA)
@@ -98,7 +98,7 @@ source("autopower_cr.R")
 
 # generate sample speeds from a distribution with 10% sd
 nsample_cr = 100
-speeds_cr = rnorm(mean=27, sd=10, n=nsample_cr)
+speeds_cr = rnorm(mean=28, sd=2.8, n=nsample_cr)
 
 #generate a data frame from the model
 results_cr = data.frame(speed=speeds_cr, power=NA)
@@ -179,7 +179,7 @@ source("autopower.R") #take function from R file
 
 # generate sample speeds from a distribution with 10% sd
 nsample_sp = 100
-speeds_sp = rnorm(mean=22.4, sd=8, n=nsample_sp)
+speeds_sp = rnorm(mean=22.4, sd=2.24, n=nsample_sp)
 
 #generate a data frame from the model
 results_sp = data.frame(speed=speeds_sp, power=NA)
@@ -256,10 +256,10 @@ ggplot(results_sp,aes(x="", y=power/1000))+geom_boxplot(fill="red")+labs("Power 
 
 
 ## Assignment 3:
-### what if we design new highways that have lower rolling coefficients 
-### we can reduce the rolling coefficient by 50%
-### or we can reduce the mean speed to 80 km/h (still with 10% standard deviation)
-### calculate mean power for both (assuming the same car probabilities above)
-### which is better
+what if we design new highways that have lower rolling coefficients 
+we can reduce the rolling coefficient by 50%
+or we can reduce the mean speed to 80 km/h (still with 10% standard deviation)
+calculate mean power for both (assuming the same car probabilities above)
+which is better
 
 Based on our analysis, the mean power used over a normal distribution of car weight and surface areas, assuming a speed limit of 100km/h with standard deviation of 10%, rolling coefficient due to friction of 0.15, oefficient due to drag of 0.3, and air pressure of 1.2 kg/m^3 is `r mean(results$power)`w. If we reduce the rolling coefficient/friction of the road by half (to 0.075) the mean power is reduced to `r mean(results_cr$power)`w. Alternatively, if we reduce the speed limit of the road to 80 km/h the mean power is reduced to `r mean(results_sp$power)`w. Lowering the speed limit is less effective at reducing power needed, however this technique would be less expensive to implement. 
