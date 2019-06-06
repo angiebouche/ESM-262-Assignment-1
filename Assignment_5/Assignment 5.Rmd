@@ -1,12 +1,14 @@
 ---
 title: "Assignment 5 RMD"
 author: "Angie Bouche"
-date: "June 6, 2019"
+date: "June 14, 2019"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+
+climate <- read_csv("Climate_data.csv")
 ```
 
 ## R Markdown
